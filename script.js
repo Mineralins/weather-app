@@ -20,6 +20,7 @@ function displayWeather(weatherData) {
     const temp = weatherData.current.temp_c; 
     const condition = weatherData.current.condition.text;
     const iconUrl = weatherData.current.condition.icon;
+    updateBackgroundByLocalTime(weatherData);
 
     weatherResult.innerHTML = `
         <h2 class="city-name">${city}, ${country}</h2>
@@ -27,6 +28,23 @@ function displayWeather(weatherData) {
         <img src="https:${iconUrl}" alt="${condition}" class="weather-icon">
         <div class="weather-condition">${condition}</div>
     `;
+}
+
+function updateBackgroundByLocalTime(weatherData) {
+	const bgEl = document.querySelector('.background-container');
+	if (!bgEl) return;
+
+	const localtime = weatherData?.location?.localtime; 
+	if (!localtime) return;
+
+	const hourStr = localtime.split(' ')[1]?.split(':')[0];
+	const hour = Number(hourStr);
+	if (Number.isNaN(hour)) return;
+
+	const isNight = hour >= 18 || hour < 5;
+	bgEl.style.backgroundImage = isNight
+		? "url('night.img.PNG')"
+		: "url('day.img.PNG')";
 }
 searchBtn.addEventListener('click', () => {
     const city = cityInput.value.trim();
